@@ -297,9 +297,9 @@ enum YawRateConfidence : int {
 }
 
 
-union FacilityLayerMessage { CAMessage, CPMessage }
+union FacilityLayerMessage { CAMessage, CPMessage, DENM }
 
-union GossipType { ChannelBusyRatio, LinkLayerReception, FacilityLayerReception }
+union GossipType { ChannelBusyRatio, LinkLayerReception, FacilityLayerReception, FacilityLayerTransmission }
 
 table CommandRequest {
   lifecycle:LifecycleAction;
@@ -360,6 +360,8 @@ table ChannelBusyRatio {
 table GossipMessage {
   gossip:GossipType;
 }
+
+
 
 // ITS PDU HEADER
 table ItsPduHeader {
@@ -507,6 +509,34 @@ enum Termination : int {
   TRMNTN_IS_CANCELLATION = 0,
   TRMNTN_IS_NEGATION = 1,
 }
+
+enum DENMType: int {
+  DENM_REQ_TRIGGER = 0,
+  DENM_REQ_UPDATE = 1,
+  DENM_REQ_TERMINATE = 2,
+  DENM_RESP_ACK = 3,
+  DENM_RESP_RX_MSG = 4,
+}
+
+table DENM {
+  denm_type:DENMType;
+  msg:DENMessage;
+}
+
+/*
+table DENMTrigger{
+  
+    trigger: bool
+    termination: 
+    reference_time:
+    event_position:
+    event_speed:
+    event_position_heading: 
+    event_type:CauseCode (required);
+    linked_cause:CauseCode;
+   
+}
+*/
 
 table DENMessage {
   header:ItsPduHeader (required);

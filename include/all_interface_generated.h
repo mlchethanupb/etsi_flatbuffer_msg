@@ -96,6 +96,9 @@ struct PerceivedObjectContainerBuilder;
 struct PerceivedObject;
 struct PerceivedObjectBuilder;
 
+struct DENM;
+struct DENMBuilder;
+
 struct DENMessage;
 struct DENMessageBuilder;
 
@@ -1718,31 +1721,34 @@ enum FacilityLayerMessage : uint8_t {
   FacilityLayerMessage_NONE = 0,
   FacilityLayerMessage_CAMessage = 1,
   FacilityLayerMessage_CPMessage = 2,
+  FacilityLayerMessage_DENM = 3,
   FacilityLayerMessage_MIN = FacilityLayerMessage_NONE,
-  FacilityLayerMessage_MAX = FacilityLayerMessage_CPMessage
+  FacilityLayerMessage_MAX = FacilityLayerMessage_DENM
 };
 
-inline const FacilityLayerMessage (&EnumValuesFacilityLayerMessage())[3] {
+inline const FacilityLayerMessage (&EnumValuesFacilityLayerMessage())[4] {
   static const FacilityLayerMessage values[] = {
     FacilityLayerMessage_NONE,
     FacilityLayerMessage_CAMessage,
-    FacilityLayerMessage_CPMessage
+    FacilityLayerMessage_CPMessage,
+    FacilityLayerMessage_DENM
   };
   return values;
 }
 
 inline const char * const *EnumNamesFacilityLayerMessage() {
-  static const char * const names[4] = {
+  static const char * const names[5] = {
     "NONE",
     "CAMessage",
     "CPMessage",
+    "DENM",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameFacilityLayerMessage(FacilityLayerMessage e) {
-  if (::flatbuffers::IsOutRange(e, FacilityLayerMessage_NONE, FacilityLayerMessage_CPMessage)) return "";
+  if (::flatbuffers::IsOutRange(e, FacilityLayerMessage_NONE, FacilityLayerMessage_DENM)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesFacilityLayerMessage()[index];
 }
@@ -1759,6 +1765,10 @@ template<> struct FacilityLayerMessageTraits<Gos::CPMessage> {
   static const FacilityLayerMessage enum_value = FacilityLayerMessage_CPMessage;
 };
 
+template<> struct FacilityLayerMessageTraits<Gos::DENM> {
+  static const FacilityLayerMessage enum_value = FacilityLayerMessage_DENM;
+};
+
 bool VerifyFacilityLayerMessage(::flatbuffers::Verifier &verifier, const void *obj, FacilityLayerMessage type);
 bool VerifyFacilityLayerMessageVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types);
 
@@ -1767,33 +1777,36 @@ enum GossipType : uint8_t {
   GossipType_ChannelBusyRatio = 1,
   GossipType_LinkLayerReception = 2,
   GossipType_FacilityLayerReception = 3,
+  GossipType_FacilityLayerTransmission = 4,
   GossipType_MIN = GossipType_NONE,
-  GossipType_MAX = GossipType_FacilityLayerReception
+  GossipType_MAX = GossipType_FacilityLayerTransmission
 };
 
-inline const GossipType (&EnumValuesGossipType())[4] {
+inline const GossipType (&EnumValuesGossipType())[5] {
   static const GossipType values[] = {
     GossipType_NONE,
     GossipType_ChannelBusyRatio,
     GossipType_LinkLayerReception,
-    GossipType_FacilityLayerReception
+    GossipType_FacilityLayerReception,
+    GossipType_FacilityLayerTransmission
   };
   return values;
 }
 
 inline const char * const *EnumNamesGossipType() {
-  static const char * const names[5] = {
+  static const char * const names[6] = {
     "NONE",
     "ChannelBusyRatio",
     "LinkLayerReception",
     "FacilityLayerReception",
+    "FacilityLayerTransmission",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameGossipType(GossipType e) {
-  if (::flatbuffers::IsOutRange(e, GossipType_NONE, GossipType_FacilityLayerReception)) return "";
+  if (::flatbuffers::IsOutRange(e, GossipType_NONE, GossipType_FacilityLayerTransmission)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesGossipType()[index];
 }
@@ -1812,6 +1825,10 @@ template<> struct GossipTypeTraits<Gos::LinkLayerReception> {
 
 template<> struct GossipTypeTraits<Gos::FacilityLayerReception> {
   static const GossipType enum_value = GossipType_FacilityLayerReception;
+};
+
+template<> struct GossipTypeTraits<Gos::FacilityLayerTransmission> {
+  static const GossipType enum_value = GossipType_FacilityLayerTransmission;
 };
 
 bool VerifyGossipType(::flatbuffers::Verifier &verifier, const void *obj, GossipType type);
@@ -1845,6 +1862,45 @@ inline const char *EnumNameTermination(Termination e) {
   if (::flatbuffers::IsOutRange(e, Termination_TRMNTN_IS_CANCELLATION, Termination_TRMNTN_IS_NEGATION)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesTermination()[index];
+}
+
+enum DENMType : int32_t {
+  DENMType_DENM_REQ_TRIGGER = 0,
+  DENMType_DENM_REQ_UPDATE = 1,
+  DENMType_DENM_REQ_TERMINATE = 2,
+  DENMType_DENM_RESP_ACK = 3,
+  DENMType_DENM_RESP_RX_MSG = 4,
+  DENMType_MIN = DENMType_DENM_REQ_TRIGGER,
+  DENMType_MAX = DENMType_DENM_RESP_RX_MSG
+};
+
+inline const DENMType (&EnumValuesDENMType())[5] {
+  static const DENMType values[] = {
+    DENMType_DENM_REQ_TRIGGER,
+    DENMType_DENM_REQ_UPDATE,
+    DENMType_DENM_REQ_TERMINATE,
+    DENMType_DENM_RESP_ACK,
+    DENMType_DENM_RESP_RX_MSG
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesDENMType() {
+  static const char * const names[6] = {
+    "DENM_REQ_TRIGGER",
+    "DENM_REQ_UPDATE",
+    "DENM_REQ_TERMINATE",
+    "DENM_RESP_ACK",
+    "DENM_RESP_RX_MSG",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameDENMType(DENMType e) {
+  if (::flatbuffers::IsOutRange(e, DENMType_DENM_REQ_TRIGGER, DENMType_DENM_RESP_RX_MSG)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesDENMType()[index];
 }
 
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) AccelerationComponent FLATBUFFERS_FINAL_CLASS {
@@ -2415,6 +2471,9 @@ struct FacilityLayerTransmission FLATBUFFERS_FINAL_CLASS : private ::flatbuffers
   const Gos::CPMessage *msg_as_CPMessage() const {
     return msg_type() == Gos::FacilityLayerMessage_CPMessage ? static_cast<const Gos::CPMessage *>(msg()) : nullptr;
   }
+  const Gos::DENM *msg_as_DENM() const {
+    return msg_type() == Gos::FacilityLayerMessage_DENM ? static_cast<const Gos::DENM *>(msg()) : nullptr;
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_MSG_TYPE, 1) &&
@@ -2430,6 +2489,10 @@ template<> inline const Gos::CAMessage *FacilityLayerTransmission::msg_as<Gos::C
 
 template<> inline const Gos::CPMessage *FacilityLayerTransmission::msg_as<Gos::CPMessage>() const {
   return msg_as_CPMessage();
+}
+
+template<> inline const Gos::DENM *FacilityLayerTransmission::msg_as<Gos::DENM>() const {
+  return msg_as_DENM();
 }
 
 struct FacilityLayerTransmissionBuilder {
@@ -2483,6 +2546,9 @@ struct FacilityLayerReception FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::T
   const Gos::CPMessage *msg_as_CPMessage() const {
     return msg_type() == Gos::FacilityLayerMessage_CPMessage ? static_cast<const Gos::CPMessage *>(msg()) : nullptr;
   }
+  const Gos::DENM *msg_as_DENM() const {
+    return msg_type() == Gos::FacilityLayerMessage_DENM ? static_cast<const Gos::DENM *>(msg()) : nullptr;
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_MSG_TYPE, 1) &&
@@ -2498,6 +2564,10 @@ template<> inline const Gos::CAMessage *FacilityLayerReception::msg_as<Gos::CAMe
 
 template<> inline const Gos::CPMessage *FacilityLayerReception::msg_as<Gos::CPMessage>() const {
   return msg_as_CPMessage();
+}
+
+template<> inline const Gos::DENM *FacilityLayerReception::msg_as<Gos::DENM>() const {
+  return msg_as_DENM();
 }
 
 struct FacilityLayerReceptionBuilder {
@@ -2605,6 +2675,9 @@ struct GossipMessage FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   const Gos::FacilityLayerReception *gossip_as_FacilityLayerReception() const {
     return gossip_type() == Gos::GossipType_FacilityLayerReception ? static_cast<const Gos::FacilityLayerReception *>(gossip()) : nullptr;
   }
+  const Gos::FacilityLayerTransmission *gossip_as_FacilityLayerTransmission() const {
+    return gossip_type() == Gos::GossipType_FacilityLayerTransmission ? static_cast<const Gos::FacilityLayerTransmission *>(gossip()) : nullptr;
+  }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint8_t>(verifier, VT_GOSSIP_TYPE, 1) &&
@@ -2624,6 +2697,10 @@ template<> inline const Gos::LinkLayerReception *GossipMessage::gossip_as<Gos::L
 
 template<> inline const Gos::FacilityLayerReception *GossipMessage::gossip_as<Gos::FacilityLayerReception>() const {
   return gossip_as_FacilityLayerReception();
+}
+
+template<> inline const Gos::FacilityLayerTransmission *GossipMessage::gossip_as<Gos::FacilityLayerTransmission>() const {
+  return gossip_as_FacilityLayerTransmission();
 }
 
 struct GossipMessageBuilder {
@@ -3999,6 +4076,58 @@ inline ::flatbuffers::Offset<PerceivedObject> CreatePerceivedObjectDirect(
       object_age,
       classification__,
       map_position);
+}
+
+struct DENM FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
+  typedef DENMBuilder Builder;
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_DENM_TYPE = 4,
+    VT_MSG = 6
+  };
+  Gos::DENMType denm_type() const {
+    return static_cast<Gos::DENMType>(GetField<int32_t>(VT_DENM_TYPE, 0));
+  }
+  const Gos::DENMessage *msg() const {
+    return GetPointer<const Gos::DENMessage *>(VT_MSG);
+  }
+  bool Verify(::flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int32_t>(verifier, VT_DENM_TYPE, 4) &&
+           VerifyOffset(verifier, VT_MSG) &&
+           verifier.VerifyTable(msg()) &&
+           verifier.EndTable();
+  }
+};
+
+struct DENMBuilder {
+  typedef DENM Table;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_denm_type(Gos::DENMType denm_type) {
+    fbb_.AddElement<int32_t>(DENM::VT_DENM_TYPE, static_cast<int32_t>(denm_type), 0);
+  }
+  void add_msg(::flatbuffers::Offset<Gos::DENMessage> msg) {
+    fbb_.AddOffset(DENM::VT_MSG, msg);
+  }
+  explicit DENMBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  ::flatbuffers::Offset<DENM> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = ::flatbuffers::Offset<DENM>(end);
+    return o;
+  }
+};
+
+inline ::flatbuffers::Offset<DENM> CreateDENM(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    Gos::DENMType denm_type = Gos::DENMType_DENM_REQ_TRIGGER,
+    ::flatbuffers::Offset<Gos::DENMessage> msg = 0) {
+  DENMBuilder builder_(_fbb);
+  builder_.add_msg(msg);
+  builder_.add_denm_type(denm_type);
+  return builder_.Finish();
 }
 
 struct DENMessage FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
@@ -8926,6 +9055,10 @@ inline bool VerifyFacilityLayerMessage(::flatbuffers::Verifier &verifier, const 
       auto ptr = reinterpret_cast<const Gos::CPMessage *>(obj);
       return verifier.VerifyTable(ptr);
     }
+    case FacilityLayerMessage_DENM: {
+      auto ptr = reinterpret_cast<const Gos::DENM *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
     default: return true;
   }
 }
@@ -8957,6 +9090,10 @@ inline bool VerifyGossipType(::flatbuffers::Verifier &verifier, const void *obj,
     }
     case GossipType_FacilityLayerReception: {
       auto ptr = reinterpret_cast<const Gos::FacilityLayerReception *>(obj);
+      return verifier.VerifyTable(ptr);
+    }
+    case GossipType_FacilityLayerTransmission: {
+      auto ptr = reinterpret_cast<const Gos::FacilityLayerTransmission *>(obj);
       return verifier.VerifyTable(ptr);
     }
     default: return true;
