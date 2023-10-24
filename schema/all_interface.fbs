@@ -544,7 +544,7 @@ table DENMessage {
 }
 
 table DecentralizedEnvironmentalNotificationMessage {
-  management:DenmManagementContainer (required);
+  management:DenmManagementContainer;
   situation:SituationContainer;
   location:LocationContainer;
   alacarte:AlacarteContainer;
@@ -582,11 +582,11 @@ table LocationContainer {
 }
 
 table DenmManagementContainer {
-  action_id:ActionID (required);
+  action_id:ActionID ;
   detection_time:ulong;
   reference_time:ulong;
   termination:Termination;
-  event_position:ReferencePosition (required);
+  event_position:ReferencePosition ;
   relevance_distance:RelevanceDistance;
   relevance_traffic_direction:RelevanceTrafficDirection;
   validity_duration:uint = 600;

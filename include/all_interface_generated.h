@@ -4207,7 +4207,7 @@ struct DecentralizedEnvironmentalNotificationMessage FLATBUFFERS_FINAL_CLASS : p
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffsetRequired(verifier, VT_MANAGEMENT) &&
+           VerifyOffset(verifier, VT_MANAGEMENT) &&
            verifier.VerifyTable(management()) &&
            VerifyOffset(verifier, VT_SITUATION) &&
            verifier.VerifyTable(situation()) &&
@@ -4242,7 +4242,6 @@ struct DecentralizedEnvironmentalNotificationMessageBuilder {
   ::flatbuffers::Offset<DecentralizedEnvironmentalNotificationMessage> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = ::flatbuffers::Offset<DecentralizedEnvironmentalNotificationMessage>(end);
-    fbb_.Required(o, DecentralizedEnvironmentalNotificationMessage::VT_MANAGEMENT);
     return o;
   }
 };
@@ -4657,12 +4656,12 @@ struct DenmManagementContainer FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffsetRequired(verifier, VT_ACTION_ID) &&
+           VerifyOffset(verifier, VT_ACTION_ID) &&
            verifier.VerifyTable(action_id()) &&
            VerifyField<uint64_t>(verifier, VT_DETECTION_TIME, 8) &&
            VerifyField<uint64_t>(verifier, VT_REFERENCE_TIME, 8) &&
            VerifyField<int32_t>(verifier, VT_TERMINATION, 4) &&
-           VerifyOffsetRequired(verifier, VT_EVENT_POSITION) &&
+           VerifyOffset(verifier, VT_EVENT_POSITION) &&
            verifier.VerifyTable(event_position()) &&
            VerifyField<int32_t>(verifier, VT_RELEVANCE_DISTANCE, 4) &&
            VerifyField<int32_t>(verifier, VT_RELEVANCE_TRAFFIC_DIRECTION, 4) &&
@@ -4714,8 +4713,6 @@ struct DenmManagementContainerBuilder {
   ::flatbuffers::Offset<DenmManagementContainer> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = ::flatbuffers::Offset<DenmManagementContainer>(end);
-    fbb_.Required(o, DenmManagementContainer::VT_ACTION_ID);
-    fbb_.Required(o, DenmManagementContainer::VT_EVENT_POSITION);
     return o;
   }
 };
